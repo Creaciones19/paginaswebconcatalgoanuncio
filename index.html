@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mis sitios | Café · Autos · Boutique</title>
+
+    <style>
+        :root {
+            color-scheme: dark;
+            --bg: #090d13;
+            --text: #f5f4f0;
+            --muted: #aeb6c2;
+            --line: #ffffff26;
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            background: var(--bg);
+            color: var(--text);
+            font-family: Arial, Helvetica, sans-serif;
+        }
+
+        header {
+            padding: 22px clamp(16px, 4vw, 60px);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 20px;
+            border-bottom: 1px solid var(--line);
+            flex-wrap: wrap;
+        }
+
+        .brand {
+            font-size: clamp(18px, 2vw, 25px);
+            font-weight: 700;
+            letter-spacing: 0.12em;
+        }
+
+        .sub {
+            font-size: 12px;
+            color: var(--muted);
+            letter-spacing: 0.12em;
+            margin-top: 7px;
+        }
+
+        nav {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        nav button {
+            appearance: none;
+            border: 1px solid #ffffff50;
+            background: transparent;
+            color: white;
+            border-radius: 30px;
+            padding: 12px 24px;
+            font-size: 14px;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+
+        nav button:hover,
+        nav button[aria-selected="true"] {
+            background: #f5f4f0;
+            color: #10131a;
+        }
+
+        main {
+            height: calc(100dvh - 100px);
+            min-height: 450px;
+        }
+
+        iframe {
+            width: 100%;
+            height: 100%;
+            border: 0;
+            background: white;
+        }
+
+        footer {
+            display: none;
+        }
+
+        @media (max-width: 600px) {
+            header {
+                padding: 15px;
+            }
+
+            nav {
+                width: 100%;
+                display: grid;
+                grid-template-columns: repeat(3, 1fr);
+            }
+
+            nav button {
+                padding: 11px 5px;
+            }
+
+            main {
+                height: calc(100dvh - 135px);
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <header>
+        <div>
+            <div class="brand">EXPERIENCIAS</div>
+            <div class="sub">CAFÉ · AUTOS · BOUTIQUE</div>
+        </div>
+
+        <nav role="tablist" aria-label="Seleccionar sitio">
+            <button
+                type="button"
+                role="tab"
+                data-page="indexcafe.html"
+                aria-selected="true"
+            >
+                 Café
+            </button>
+
+            <button
+                type="button"
+                role="tab"
+                data-page="indexcompleto.html"
+                aria-selected="false"
+            >
+                 Autos
+            </button>
+
+            <button
+                type="button"
+                role="tab"
+                data-page="catalogoropa.html"
+                aria-selected="false"
+            >
+                 Boutique
+            </button>
+        </nav>
+    </header>
+
+    <main>
+        <iframe
+            id="sitio"
+            src="indexcafe.html"
+            title="Sitio seleccionado"
+            allow="autoplay; fullscreen; picture-in-picture"
+            allowfullscreen
+        ></iframe>
+    </main>
+
+    <script>
+        // Los tres archivos HTML deben estar en la misma carpeta que este index.html.
+        // Si cambia algún nombre, edite únicamente el atributo data-page correspondiente.
+
+        const frame = document.getElementById('sitio');
+        const tabs = [...document.querySelectorAll('[role="tab"]')];
+
+        function abrir(tab) {
+            tabs.forEach(function (elemento) {
+                elemento.setAttribute(
+                    'aria-selected',
+                    String(elemento === tab)
+                );
+            });
+
+            frame.src = tab.dataset.page;
+            frame.title = 'Sitio: ' + tab.textContent.trim();
+        }
+
+        tabs.forEach(function (tab) {
+            tab.addEventListener('click', function () {
+                abrir(tab);
+            });
+        });
+    </script>
+</body>
+</html>

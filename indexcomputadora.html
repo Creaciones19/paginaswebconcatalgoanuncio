@@ -1,0 +1,336 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Experiencias | Café · Autos · Boutique</title>
+  <style>
+    :root {
+      color-scheme: dark;
+      --fondo: #080d16;
+      --texto: #f4f5f8;
+      --secundario: #aeb8c9;
+      --borde: rgba(255,255,255,.18);
+      --plata: #c7d2e2;
+    }
+
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body {
+      margin: 0;
+      min-height: 100vh;
+      background: radial-gradient(ellipse at 50% 30%, #1a2b43 0%, var(--fondo) 68%);
+      color: var(--texto);
+      font-family: Arial, Helvetica, sans-serif;
+      overflow-x: hidden;
+    }
+
+    .cabecera {
+      position: relative;
+      z-index: 5;
+      padding: 22px clamp(16px, 5vw, 70px);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 20px;
+      flex-wrap: wrap;
+    }
+
+    .marca { font-size: clamp(19px, 2.3vw, 27px); font-weight: 700; letter-spacing: .15em; }
+    .subtitulo { margin-top: 7px; color: var(--secundario); font-size: 11px; letter-spacing: .18em; }
+    .pestanas { display: flex; gap: 10px; flex-wrap: wrap; }
+    .pestanas button {
+      border: 1px solid rgba(210,225,245,.4);
+      background: rgba(255,255,255,.045);
+      color: white;
+      padding: 12px 23px;
+      border-radius: 5px;
+      font-size: 12px;
+      font-weight: 600;
+      letter-spacing: .15em;
+      cursor: pointer;
+      transition: background .25s, color .25s, transform .25s;
+    }
+    .pestanas button:hover { transform: translateY(-2px); }
+    .pestanas button[aria-selected="true"] { background: #e6ecf5; color: #0b1421; }
+
+    .escenario {
+      width: 100%;
+      min-height: calc(100vh - 125px);
+      padding: 12px 20px 35px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      perspective: 1600px;
+    }
+
+    .instruccion { margin: 0 0 20px; color: var(--secundario); font-size: 13px; text-align: center; }
+    .computadora {
+      width: min(1050px, 88vw);
+      transform-style: preserve-3d;
+      animation: flotar 8s ease-in-out infinite;
+      filter: drop-shadow(0 35px 35px rgba(0,0,0,.55));
+    }
+    .monitor {
+      position: relative;
+      padding: clamp(9px, 1.3vw, 16px);
+      background: linear-gradient(145deg, #3d495a, #111722 35%, #0c111a 78%, #526074);
+      border: 1px solid #6a788b;
+      border-radius: 20px;
+      box-shadow: inset 0 0 0 2px #151e2b, 0 0 40px rgba(149,184,229,.1);
+    }
+    .pantalla {
+      position: relative;
+      width: 100%;
+      aspect-ratio: 16 / 9;
+      overflow: hidden;
+      background: #090e17;
+      border-radius: 7px;
+      border: 1px solid #000;
+    }
+    .pantalla iframe {
+      width: 100%;
+      height: 100%;
+      display: block;
+      border: 0;
+      background: #0c1118;
+    }
+    .aviso-pantalla {
+      position: absolute; inset: 0; display: none; z-index: 2;
+      align-items: center; justify-content: center; text-align: center;
+      padding: 24px; background: #101a29; color: #f5f5f5;
+      font-size: clamp(12px, 1.5vw, 18px); line-height: 1.6;
+    }
+    .aviso-pantalla.visible { display: flex; }
+    .monitor-pie {
+      width: 19%;
+      height: clamp(35px, 7vw, 85px);
+      margin: 0 auto;
+      background: linear-gradient(90deg, #1b2431, #66768b 46%, #202b3b);
+      clip-path: polygon(37% 0, 63% 0, 75% 100%, 25% 100%);
+    }
+    .base {
+      width: 38%;
+      height: clamp(10px, 1.7vw, 20px);
+      margin: -1px auto 0;
+      border-radius: 50% 50% 35% 35%;
+      background: linear-gradient(#738397, #283342 55%, #111824);
+      box-shadow: 0 12px 25px #0009;
+    }
+    .controles {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 12px;
+      margin-top: 25px;
+    }
+    .controles button, .controles a {
+      border: 1px solid var(--borde);
+      background: #172437;
+      color: #fff;
+      border-radius: 4px;
+      padding: 11px 18px;
+      font: inherit;
+      font-size: 13px;
+      cursor: pointer;
+      text-decoration: none;
+    }
+    .controles button:hover, .controles a:hover { background: #2b405b; }
+    .nota { margin: 14px 0 0; color: var(--secundario); font-size: 12px; text-align: center; }
+
+    @keyframes flotar {
+      0%, 100% { transform: translateY(0) rotateY(-3deg) rotateX(2deg); }
+      50% { transform: translateY(-13px) rotateY(3deg) rotateX(-1deg); }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      .computadora { animation: none; }
+      * { scroll-behavior: auto; }
+    }
+    @media (max-width: 650px) {
+      .cabecera { padding: 16px; }
+      .pestanas { width: 100%; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); }
+      .pestanas button { padding: 11px 4px; }
+      .escenario { min-height: auto; padding: 32px 5px; }
+      .computadora { width: 97vw; }
+      .monitor { border-radius: 10px; }
+      .instruccion { padding: 0 12px; }
+    }
+  </style>
+</head>
+<body>
+  <header class="cabecera">
+    <div>
+      <div class="marca">EXPERIENCIAS</div>
+      <div class="subtitulo">CAFÉ · AUTOS · BOUTIQUE</div>
+    </div>
+    <nav class="pestanas" role="tablist" aria-label="Seleccionar sitio">
+      <button type="button" role="tab" data-page="indexcafe.html" aria-selected="true">CAFÉ</button>
+      <button type="button" role="tab" data-page="indexcompleto.html" aria-selected="false">AUTOS</button>
+      <button type="button" role="tab" data-page="catalogoropa.html" aria-selected="false">BOUTIQUE</button>
+    </nav>
+  </header>
+
+  <main class="escenario">
+    <p class="instruccion">UNA EXPERIENCIA, TRES UNIVERSOS</p>
+    <div class="computadora">
+      <div class="monitor">
+        <div class="pantalla">
+          <iframe id="sitio" src="indexcafe.html" title="Sitio Café" allow="autoplay; fullscreen; picture-in-picture" allowfullscreen></iframe>
+          <div class="aviso-pantalla" id="avisoPantalla" role="alert"></div>
+        </div>
+      </div>
+      <div class="monitor-pie" aria-hidden="true"></div>
+      <div class="base" aria-hidden="true"></div>
+    </div>
+    <div class="controles">
+      <button type="button" id="alternar">Pausar recorrido</button>
+      <button type="button" id="reiniciar">Volver arriba</button>
+      <a id="abrirCompleto" href="indexcafe.html" target="_blank" rel="noopener">Abrir sitio completo</a>
+    </div>
+    <p class="nota" id="estado" role="status">Para ver las páginas, los cuatro HTML deben estar en la misma carpeta. En VS Code puede abrir este archivo con Live Server.</p>
+  </main>
+
+  <script>
+    // Los tres HTML deben permanecer en la misma carpeta que este archivo.
+    // Renombre el index.html original del café a indexcafe.html.
+    const marco = document.getElementById('sitio');
+    const pestanas = Array.from(document.querySelectorAll('[role="tab"]'));
+    const botonAlternar = document.getElementById('alternar');
+    const botonReiniciar = document.getElementById('reiniciar');
+    const enlaceCompleto = document.getElementById('abrirCompleto');
+    const estado = document.getElementById('estado');
+    const avisoPantalla = document.getElementById('avisoPantalla');
+    let solicitudActual = 0;
+
+    function mostrarAviso(mensaje) {
+      avisoPantalla.textContent = mensaje;
+      avisoPantalla.classList.add('visible');
+    }
+
+    function ocultarAviso() {
+      avisoPantalla.classList.remove('visible');
+    }
+
+    async function verificarPagina(nombreArchivo) {
+      const solicitud = ++solicitudActual;
+      if (location.protocol === 'file:') {
+        // En file:// el navegador puede impedir comprobar archivos locales.
+        // El iframe sigue intentando cargar la página normalmente.
+        estado.textContent = 'Si no aparece la página, compruebe que ' + nombreArchivo + ' está en la misma carpeta que este HTML. Para publicar, suba todos los archivos y recursos.';
+        return;
+      }
+      try {
+        const respuesta = await fetch(nombreArchivo, { method: 'GET', cache: 'no-store' });
+        if (solicitud !== solicitudActual) return;
+        if (!respuesta.ok) {
+          mostrarAviso('No se encontró ' + nombreArchivo + '. Coloque ese archivo en la misma carpeta que este index y vuelva a cargar.');
+          estado.textContent = 'Archivo no encontrado: ' + nombreArchivo;
+        } else {
+          ocultarAviso();
+        }
+      } catch (error) {
+        if (solicitud === solicitudActual) {
+          estado.textContent = 'No se pudo verificar ' + nombreArchivo + '. Revise los archivos y recursos de la carpeta.';
+        }
+      }
+    }
+
+    let reproduciendo = true;
+    let posicionAnterior = 0;
+    let esperaHasta = 0;
+    let ultimoTiempo = 0;
+    let documentoActual = null;
+
+    function documentoInterior() {
+      try {
+        return marco.contentDocument;
+      } catch (error) {
+        return null;
+      }
+    }
+
+    function contenedorScroll() {
+      const doc = documentoInterior();
+      if (!doc) return null;
+      return doc.scrollingElement || doc.documentElement;
+    }
+
+    function cambiarPagina(pestana) {
+      pestanas.forEach(function (elemento) {
+        elemento.setAttribute('aria-selected', String(elemento === pestana));
+      });
+      ocultarAviso();
+      marco.src = pestana.dataset.page;
+      verificarPagina(pestana.dataset.page);
+      marco.title = 'Sitio: ' + pestana.textContent.trim();
+      enlaceCompleto.href = pestana.dataset.page;
+      posicionAnterior = 0;
+      esperaHasta = performance.now() + 2500;
+      documentoActual = null;
+    }
+
+    pestanas.forEach(function (pestana) {
+      pestana.addEventListener('click', function () {
+        cambiarPagina(pestana);
+      });
+    });
+
+    marco.addEventListener('load', function () {
+      documentoActual = documentoInterior();
+      esperaHasta = performance.now() + 2500;
+      posicionAnterior = 0;
+      if (!documentoActual) {
+        estado.textContent = 'No se puede acceder al contenido de la página. Compruebe la ruta y abra el proyecto con Live Server en VS Code.';
+      } else {
+        estado.textContent = 'Puede desplazarse manualmente dentro de la pantalla o pausar el recorrido.';
+      }
+    });
+
+    botonAlternar.addEventListener('click', function () {
+      reproduciendo = !reproduciendo;
+      botonAlternar.textContent = reproduciendo ? 'Pausar recorrido' : 'Reanudar recorrido';
+      ultimoTiempo = 0;
+      esperaHasta = performance.now() + 1000;
+    });
+
+    botonReiniciar.addEventListener('click', function () {
+      const contenedor = contenedorScroll();
+      if (contenedor) {
+        contenedor.scrollTop = 0;
+        posicionAnterior = 0;
+        esperaHasta = performance.now() + 1800;
+      }
+    });
+
+    function animarRecorrido(tiempo) {
+      requestAnimationFrame(animarRecorrido);
+      if (!reproduciendo || document.hidden || tiempo < esperaHasta) {
+        ultimoTiempo = tiempo;
+        return;
+      }
+      const contenedor = contenedorScroll();
+      if (!contenedor) return;
+      const doc = documentoInterior();
+      const maximo = Math.max(0, contenedor.scrollHeight - (doc.defaultView ? doc.defaultView.innerHeight : marco.clientHeight));
+      if (maximo <= 0) return;
+
+      // Aproximadamente 25 píxeles por segundo; vuelve al inicio al terminar.
+      const delta = ultimoTiempo ? Math.min(tiempo - ultimoTiempo, 100) : 0;
+      ultimoTiempo = tiempo;
+      if (contenedor.scrollTop >= maximo - 3) {
+        contenedor.scrollTop = 0;
+        posicionAnterior = 0;
+        esperaHasta = tiempo + 2500;
+      } else {
+        contenedor.scrollTop += delta * 0.025;
+        posicionAnterior = contenedor.scrollTop;
+      }
+    }
+
+    verificarPagina('indexcafe.html');
+    requestAnimationFrame(animarRecorrido);
+  </script>
+</body>
+</html>
